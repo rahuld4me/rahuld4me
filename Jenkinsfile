@@ -17,7 +17,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject() {
                                 echo "stage 1: using project: ${openshift.project()} in cluster ${openshift.cluster()} creating the deployment"
-                               " oc create deployment  webapp   --image quay.io/mayank123modi/mayanknginximage"
+                             sh  ' oc create deployment  webapp   --image quay.io/mayank123modi/mayanknginximage'
                         }
                     }
                 }
@@ -26,16 +26,16 @@ pipeline {
 
         stage('stage 2') {
             steps {
-                sh 'creating the svc'
-               " oc expose deployment webapp  --port 80"
+                echo" creating the svc"
+             sh  ' oc expose deployment webapp  --port 80'
             }
         }
 
 
         stage('stage 3') {
             steps {
-                sh 'creating the route'
-               " oc expose service  webapp"
+                echo "creating the route"
+               sh ' oc expose service  webapp'
             }
         }
 
