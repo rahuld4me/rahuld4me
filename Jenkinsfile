@@ -16,7 +16,8 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject() {
-                                echo "stage 1: using project: ${openshift.project()} in cluster ${openshift.cluster()}"
+                                echo "stage 1: using project: ${openshift.project()} in cluster ${openshift.cluster()} creating the deployment"
+                                oc create deployment  webapp   --image quay.io/mayank123modi/mayanknginximage
                         }
                     }
                 }
@@ -25,21 +26,16 @@ pipeline {
 
         stage('stage 2') {
             steps {
-                sh 'echo hello from stage 2!'
+                sh 'creating the svc'
+                oc expose deployment webapp  --port 80
             }
         }
 
-        stage('manual approval') {
-            steps {
-                timeout(time: 60, unit: 'MINUTES') {
-                    input message: "Move to stage 3?"
-                }
-            }
-        }
 
         stage('stage 3') {
             steps {
-                sh 'echo hello from stage 3!. This is the last stage...'
+                sh 'creating the route'
+                oc expose service  webapp
             }
         }
 
